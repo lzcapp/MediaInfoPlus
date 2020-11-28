@@ -6,8 +6,8 @@ using System.IO;
 using System.Windows.Forms;
 
 namespace MediaInfo_ {
-    public partial class Form1 : Form {
-        public Form1() {
+    public partial class Form : System.Windows.Forms.Form {
+        public Form() {
             InitializeComponent();
         }
 
@@ -57,6 +57,7 @@ namespace MediaInfo_ {
                         treeView.Nodes[0].Nodes.Add(directoryName);
                         for (var j = 0; j < directory.TagCount; j++) {
                             string tagName = directory.Tags[j].ToString();
+                            tagName = tagName.Replace("[" + directoryName + "] ", "");
                             treeView.Nodes[0].Nodes[index].Nodes.Add(tagName);
                         }
                         index++;
