@@ -7,12 +7,25 @@ using System.Windows.Forms;
 
 namespace MediaInfo_ {
     public partial class Form : System.Windows.Forms.Form {
+        private readonly string argFileName = "";
+
         public Form() {
             InitializeComponent();
         }
 
+        public Form(string[] args) {
+            InitializeComponent();
+            if (args.Length >= 1) {
+                argFileName = args[0];
+            }
+        }
+
         private void Form1_Load(object sender, EventArgs e) {
             Text = "RainySummer/MediaInfo+";
+            if (argFileName != "") {
+                var file = new FileInfo(argFileName);
+                MetadateQuery(file);
+            }
         }
 
         private void OpenToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -38,15 +51,16 @@ namespace MediaInfo_ {
             try {
                 var mi = new MediaInfo();
                 mi.Open(file.FullName);
-                string strFormat;
-                try {
-                    strFormat = mi.Get(StreamKind.General, 0, "Format");
-                } catch (Exception) {
-                    mi.Close();
-                    mi.Dispose();
-                    return;
+                bool fileType = false; // Default is Video File
+                string miFile = mi.Inform();
+                string[] miFiles = miFile.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var miLine in miFiles) {
+                    if (miLine == "Image") {
+                        fileType = true;
+                        break;
+                    }
                 }
-                if (strFormat == "JPEG" || strFormat == "TIFF" || strFormat == "WebP" || strFormat == "PNG" || strFormat == "PSD") {
+                if (fileType == true) {
                     // Picture File
                     mi.Close();
                     var directories = ImageMetadataReader.ReadMetadata(file.FullName);
@@ -116,6 +130,20 @@ namespace MediaInfo_ {
                     Clipboard.SetData(DataFormats.Text, (Object)nodeText);
                 }
             }
+        }
+
+        private void TreeView_DragEnter(object sender, DragEventArgs e) {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop)) {
+                e.Effect = DragDropEffects.Link;
+            } else {
+                e.Effect = DragDropEffects.None;
+            }
+        }
+
+        private void TreeView_DragDrop(object sender, DragEventArgs e) {
+            string fileName = ((System.Array)e.Data.GetData(DataFormats.FileDrop)).GetValue(0).ToString();
+            var file = new FileInfo(fileName);
+            MetadateQuery(file);
         }
     }
 }

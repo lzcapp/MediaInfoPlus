@@ -43,6 +43,7 @@ namespace MediaInfo_ {
             // 
             // treeView
             // 
+            this.treeView.AllowDrop = true;
             this.treeView.BackColor = System.Drawing.SystemColors.Control;
             this.treeView.ContextMenuStrip = this.contextMenuStrip;
             this.treeView.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -50,6 +51,8 @@ namespace MediaInfo_ {
             this.treeView.Name = "treeView";
             this.treeView.Size = new System.Drawing.Size(800, 422);
             this.treeView.TabIndex = 0;
+            this.treeView.DragDrop += new System.Windows.Forms.DragEventHandler(this.TreeView_DragDrop);
+            this.treeView.DragEnter += new System.Windows.Forms.DragEventHandler(this.TreeView_DragEnter);
             this.treeView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             // 
             // contextMenuStrip
