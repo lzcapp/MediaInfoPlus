@@ -83,7 +83,9 @@ namespace MediaInfo_ {
             treeView.ExpandAll();
             treeView.EndUpdate();
             treeView.Nodes[0].EnsureVisible();
-            treeView.ContextMenuStrip = contextMenuStrip;
+            copyToolStripMenuItem.Visible = true;
+            closeToolStripMenuItem.Visible = true;
+            closeToolStripMenuItem1.Visible = true;
         }
 
         private void CloseToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -91,7 +93,9 @@ namespace MediaInfo_ {
             treeView.BeginUpdate();
             treeView.Nodes.Clear();
             treeView.EndUpdate();
-            treeView.ContextMenuStrip = null;
+            copyToolStripMenuItem.Visible = false;
+            closeToolStripMenuItem.Visible = false;
+            closeToolStripMenuItem1.Visible = false;
         }
 
         private void ExitToolStripMenuItem_Click(object sender, EventArgs e) {
