@@ -53,16 +53,19 @@ namespace MediaInfo_ {
             try {
                 var mi = new MediaInfo();
                 mi.Open(file.FullName);
-                bool fileType = false; // Default is Video File
+                int fileType = 0; // Default is Other File Type
                 string miFile = mi.Inform();
                 string[] miFiles = miFile.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (var miLine in miFiles) {
                     if (miLine == "Image") {
-                        fileType = true;
+                        fileType = 1;
+                        break;
+                    } else if (miLine == "Video" || miLine == "Audio") {
+                        fileType = 2;
                         break;
                     }
                 }
-                if (fileType == true) {
+                if (fileType == 1) {
                     // Picture File
                     mi.Close();
                     var directories = ImageMetadataReader.ReadMetadata(file.FullName);
@@ -79,8 +82,8 @@ namespace MediaInfo_ {
                         }
                         index++;
                     }
-                } else {
-                    // Video File
+                } else if (fileType == 2) {
+                    // Video or Audio File
                     string mediaInfo = mi.Inform();
                     string[] miParameters = mediaInfo.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
                     int index = -1;
@@ -93,6 +96,32 @@ namespace MediaInfo_ {
                             treeView.Nodes[0].Nodes[index].Nodes.Add(tagName);
                         }
                     }
+                } else {
+                    //
+                    string mediaInfo = mi.Inform();
+                    string[] miParameters = mediaInfo.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                    int index = -1;
+                    foreach (var miOutput in miParameters) {
+                        if (miOutput == "General" || miOutput == "Text") {
+                            treeView.Nodes[0].Nodes.Add(miOutput);
+                            index++;
+                        } else {
+                            string tagName = Regex.Replace(miOutput, "\\s{2,}:", ":");
+                            treeView.Nodes[0].Nodes[index].Nodes.Add(tagName);
+                        }
+                    }
+                    treeView.Nodes[0].Nodes.Add("System");
+                    index++;
+                    treeView.Nodes[0].Nodes[index].Nodes.Add("Extension: " + file.Extension);
+                    treeView.Nodes[0].Nodes[index].Nodes.Add("File Length: " + file.Length + " bytes");
+                    string isReadOnly = file.IsReadOnly ? "Yes" : "No";
+                    treeView.Nodes[0].Nodes[index].Nodes.Add("Read Only: " + isReadOnly);
+                    treeView.Nodes[0].Nodes[index].Nodes.Add("Creation Time: " + file.CreationTime);
+                    treeView.Nodes[0].Nodes[index].Nodes.Add("Creation Time Utc: " + file.CreationTimeUtc);
+                    treeView.Nodes[0].Nodes[index].Nodes.Add("Last Access Time: " + file.LastAccessTime);
+                    treeView.Nodes[0].Nodes[index].Nodes.Add("Last Access Time Utc: " + file.LastAccessTimeUtc);
+                    treeView.Nodes[0].Nodes[index].Nodes.Add("Last Write Time: " + file.LastWriteTime);
+                    treeView.Nodes[0].Nodes[index].Nodes.Add("Last Write TimeUtc: " + file.LastWriteTimeUtc);
                 }
                 mi.Dispose();
             } catch (Exception) {
