@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace MediaInfo_ {
     public partial class Form : System.Windows.Forms.Form {
@@ -118,7 +119,7 @@ namespace MediaInfo_ {
 
         private void ExitToolStripMenuItem_Click(object sender, EventArgs e) {
             //System.Environment.Exit(0);
-            System.Diagnostics.Process thisProcess = System.Diagnostics.Process.GetProcessById(System.Diagnostics.Process.GetCurrentProcess().Id);
+            Process thisProcess = Process.GetProcessById(Process.GetCurrentProcess().Id);
             thisProcess.Kill();
         }
 
