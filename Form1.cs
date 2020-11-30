@@ -174,7 +174,7 @@ namespace MediaInfo_ {
         }
 
         private void TreeView_DragDrop(object sender, DragEventArgs e) {
-            string fileName = ((System.Array)e.Data.GetData(DataFormats.FileDrop)).GetValue(0).ToString();
+            string fileName = ((Array)e.Data.GetData(DataFormats.FileDrop)).GetValue(0).ToString();
             var file = new FileInfo(fileName);
             MetadateQuery(file);
         }
