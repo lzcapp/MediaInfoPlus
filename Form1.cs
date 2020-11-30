@@ -131,6 +131,7 @@ namespace MediaInfo_ {
             treeView.ExpandAll();
             treeView.EndUpdate();
             treeView.Nodes[0].EnsureVisible();
+            treeView.Visible = true;
             copyToolStripMenuItem.Visible = true;
             closeToolStripMenuItem.Visible = true;
             closeToolStripMenuItem1.Visible = true;
@@ -138,6 +139,7 @@ namespace MediaInfo_ {
 
         private void CloseToolStripMenuItem_Click(object sender, EventArgs e) {
             Text = "RainySummer/MediaInfo+";
+            treeView.Visible = false;
             treeView.BeginUpdate();
             treeView.Nodes.Clear();
             treeView.EndUpdate();
@@ -159,8 +161,6 @@ namespace MediaInfo_ {
                 if (CurrentNode != null) {
                     CurrentNode.ContextMenuStrip = contextMenuStrip;
                     treeView.SelectedNode = CurrentNode;
-                    string nodeText = treeView.SelectedNode.Text.ToString();
-                    Clipboard.SetData(DataFormats.Text, (Object)nodeText);
                 }
             }
         }
@@ -177,6 +177,23 @@ namespace MediaInfo_ {
             string fileName = ((System.Array)e.Data.GetData(DataFormats.FileDrop)).GetValue(0).ToString();
             var file = new FileInfo(fileName);
             MetadateQuery(file);
+        }
+
+        private void Form_MouseDoubleClick(object sender, MouseEventArgs e) {
+            OpenToolStripMenuItem_Click(sender, e);
+        }
+
+        private void CopyToolStripMenuItem_Click(object sender, EventArgs e) {
+            string selectText = treeView.SelectedNode.Text;
+            if (selectText != "") {
+                toolTip.SetToolTip(treeView, "Copied to clipboard.");
+                //Clipboard.SetData(DataFormats.Text, (Object)nodeText);
+                Clipboard.SetText(selectText);
+            }
+        }
+
+        private void TreeView_MouseDoubleClick(object sender, MouseEventArgs e) {
+            CopyToolStripMenuItem_Click(sender, e);
         }
     }
 }
