@@ -1,6 +1,6 @@
 # MediaInfoPlus
  
-<img src="https://i.loli.net/2020/11/29/T6Nm152kFxHUW7l.png" width="48">
+<img src="https://raw.githubusercontent.com/RainySummerLuo/MediaInfoPlus/main/mi.ico" width="48">
 
 ![Snipaste_2020-11-29_12-47-34.png](https://i.loli.net/2020/11/29/7P3pNsbdEQneLgr.png)
 
