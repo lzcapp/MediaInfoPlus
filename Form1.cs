@@ -1,11 +1,11 @@
 ﻿using MediaInfoLib;
 using MetadataExtractor;
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using System.Diagnostics;
 
 namespace MediaInfo_ {
     public partial class Form : System.Windows.Forms.Form {
@@ -28,6 +28,21 @@ namespace MediaInfo_ {
                 var file = new FileInfo(argFileName);
                 MetadateQuery(file);
             }
+        }
+
+        private void Form1_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                e.Effect = DragDropEffects.All;
+            else
+                e.Effect = DragDropEffects.None;
+        }
+
+        private void Form1_DragDrop(object sender, DragEventArgs e)
+        {
+            string fileName = ((System.Array)e.Data.GetData(DataFormats.FileDrop)).GetValue(0).ToString();
+            var file = new FileInfo(fileName);
+            MetadateQuery(file);
         }
 
         private void OpenToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -165,6 +180,26 @@ namespace MediaInfo_ {
             }
         }
 
+        private void Form_MouseDoubleClick(object sender, MouseEventArgs e) {
+            OpenToolStripMenuItem_Click(sender, e);
+        }
+
+        private void CopyToolStripMenuItem_Click(object sender, EventArgs e) {
+            try {
+                string selectText = treeView.SelectedNode.Text;
+                if (selectText != "") {
+                    toolTip.SetToolTip(treeView, "Copied to clipboard.");
+                    //Clipboard.SetData(DataFormats.Text, (Object)nodeText);
+                    Clipboard.SetText(selectText);
+                }
+            } catch {
+            }
+        }
+
+        private void TreeView_MouseDoubleClick(object sender, MouseEventArgs e) {
+            CopyToolStripMenuItem_Click(sender, e);
+        }
+
         private void TreeView_DragEnter(object sender, DragEventArgs e) {
             if (e.Data.GetDataPresent(DataFormats.FileDrop)) {
                 e.Effect = DragDropEffects.Link;
@@ -177,23 +212,6 @@ namespace MediaInfo_ {
             string fileName = ((Array)e.Data.GetData(DataFormats.FileDrop)).GetValue(0).ToString();
             var file = new FileInfo(fileName);
             MetadateQuery(file);
-        }
-
-        private void Form_MouseDoubleClick(object sender, MouseEventArgs e) {
-            OpenToolStripMenuItem_Click(sender, e);
-        }
-
-        private void CopyToolStripMenuItem_Click(object sender, EventArgs e) {
-            string selectText = treeView.SelectedNode.Text;
-            if (selectText != "") {
-                toolTip.SetToolTip(treeView, "Copied to clipboard.");
-                //Clipboard.SetData(DataFormats.Text, (Object)nodeText);
-                Clipboard.SetText(selectText);
-            }
-        }
-
-        private void TreeView_MouseDoubleClick(object sender, MouseEventArgs e) {
-            CopyToolStripMenuItem_Click(sender, e);
         }
     }
 }
